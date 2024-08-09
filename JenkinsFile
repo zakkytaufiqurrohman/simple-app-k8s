@@ -5,8 +5,8 @@ pipeline {
     baseImage= "zakkytaufiq/go-hello-service"
     dockerimagename = "${baseImage}:${BUILD_NUMBER}"
     dockerImage = ""
-    AWS_ACCESS_KEYs = credentials('aws_key')
-    AWS_SECRET_KEYs = credentials('aws_kunci')
+    // AWS_ACCESS_KEYs = credentials('aws_key')
+    // AWS_SECRET_KEYs = credentials('aws_kunci')
   }
 
   agent any
