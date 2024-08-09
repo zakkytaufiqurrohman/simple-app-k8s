@@ -1,0 +1,43 @@
+
+pipeline {
+
+  environment {
+    baseImage= "zakkytaufiq/go-hello-service"
+    dockerimagename = "${baseImage}:${BUILD_NUMBER}"
+    dockerImage = ""
+    AWS_ACCESS_KEYs = credentials('aws_key')
+    AWS_SECRET_KEYs = credentials('aws_kunci')
+  }
+
+  agent any
+
+  stages {
+
+    stage('Build image') {
+      steps{
+        script {
+            // sh 'docker rmi -f ${baseImage}'
+            dockerImage = docker.build dockerimagename
+        }
+      }
+    }
+
+    stage('Pushing Image') {
+      environment {
+          registryCredential = 'docker_hub'
+      }
+      steps{
+        script {
+          docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+              dockerImage.push("${BUILD_NUMBER}")
+              sh 'docker rmi -f ${dockerimagename}'
+          }
+        }
+      }
+    }
+
+    // update github manifest
+    
+
+  }
+}
