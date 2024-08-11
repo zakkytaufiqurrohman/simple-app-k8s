@@ -65,6 +65,8 @@ pipeline {
     stage('Commit Changes') {
       steps {
         script {
+            sh 'git remote set-url origin ${REPO_URL}'
+
             // Commit changes
             sh 'git config user.name "Jenkins CI"'
             sh 'git config user.email "taufiqurrohmanzq@gmail.com"'
