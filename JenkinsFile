@@ -68,7 +68,7 @@ pipeline {
             sh 'git remote set-url origin ${REPO_URL}'
 
             // Commit changes
-            sh 'git config user.name "Jenkins CI"'
+            sh 'git config user.name "zakkytaufiqurrohman"'
             sh 'git config user.email "taufiqurrohmanzq@gmail.com"'
             sh 'git add argo-service-app/order/values.yaml'
             sh 'git commit -m "Updated image repository to ${IMAGE_REPOSITORY} and tag to ${IMAGE_TAG}"'
