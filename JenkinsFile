@@ -5,8 +5,9 @@ pipeline {
     baseImage= "zakkytaufiq/go-hello-service"
     dockerimagename = "${baseImage}:${BUILD_NUMBER}"
     dockerImage = ""
-    // AWS_ACCESS_KEYs = credentials('aws_key')
-    // AWS_SECRET_KEYs = credentials('aws_kunci')
+    GIT_CREDENTIALS_ID= 'git'
+    REPO_URL = 'https://github.com/zakkytaufiqurrohman/simple-app-k8s-manifest.git'
+    BRANCH_NAME = 'main'
   }
 
   agent any
@@ -37,7 +38,38 @@ pipeline {
     }
 
     // update github manifest
-    
 
+    stage('Checkout') {
+        steps {
+            // Checkout repository
+            checkout([$class: 'GitSCM',
+            branches: [[name: "*/${BRANCH_NAME}"]],
+            userRemoteConfigs: [[url: "${REPO_URL}", credentialsId: "${GIT_CREDENTIALS_ID}"]]])
+        }
+    }
+    stage('Update Values YAML') {
+        steps {
+            script {
+                // Update image repository and tag in values.yaml
+                sh """
+                sed -i 's|repository: .*|repository: ${IMAGE_REPOSITORY}|g' argo-service-app/order/values.yaml
+                sed -i 's|tag: .*|tag: "${IMAGE_TAG}"|g' argo-service-app/order/values.yaml
+                """
+            }
+        }
+    }
+        
+    stage('Commit Changes') {
+      steps {
+        script {
+            // Commit changes
+            sh 'git config user.name "Jenkins CI"'
+            sh 'git config user.email "taufiqurrohmanzq@gmail.com"'
+            sh 'git add argo-service-app/order/values.yaml'
+            sh 'git commit -m "Updated image repository to ${IMAGE_REPOSITORY} and tag to ${IMAGE_TAG}"'
+            sh 'git push origin ${BRANCH_NAME}'
+        }
+      }
+    }
   }
 }
