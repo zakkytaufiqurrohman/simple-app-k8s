@@ -42,12 +42,22 @@ pipeline {
 
     // update github manifest
 
-    stage('Checkout') {
+    // stage('Checkout') {
+    //     steps {
+    //         // Checkout repository
+    //         checkout([$class: 'GitSCM',
+    //         branches: [[name: "*/${BRANCH_NAME}"]],
+    //         userRemoteConfigs: [[url: "${REPO_URL}", credentialsId: "${GIT_CREDENTIALS_ID}"]]])
+    //     }
+    // }
+    stage("Clone Git Repository") {
         steps {
-            // Checkout repository
-            checkout([$class: 'GitSCM',
-            branches: [[name: "*/${BRANCH_NAME}"]],
-            userRemoteConfigs: [[url: "${REPO_URL}", credentialsId: "${GIT_CREDENTIALS_ID}"]]])
+            git(
+                url: "https://github.com/zakkytaufiqurrohman/simple-app-k8s-manifest.git",
+                branch: "main",
+                changelog: true,
+                poll: true
+            )
         }
     }
     stage('Update Values YAML') {
@@ -65,16 +75,23 @@ pipeline {
     stage('Commit Changes') {
       steps {
         script {
-            sh 'git remote set-url origin ${REPO_URL}'
+            // sh 'git remote set-url origin ${REPO_URL}'
 
-            // Commit changes
-            sh 'git config user.name "zakkytaufiqurrohman"'
-            sh 'git config user.email "taufiqurrohmanzq@gmail.com"'
+            // // Commit changes
+            // sh 'git config user.name "zakkytaufiqurrohman"'
+            // sh 'git config user.email "taufiqurrohmanzq@gmail.com"'
             sh 'git add argo-service-app/order/values.yaml'
             sh 'git commit -m "Updated image repository to ${IMAGE_REPOSITORY} and tag to ${IMAGE_TAG}"'
-            sh 'git push origin ${BRANCH_NAME}'
+            // sh 'git push origin ${BRANCH_NAME}'
         }
       }
+    }
+    stage("Push to Git Repository") {
+        steps {
+            withCredentials([gitUsernamePassword(credentialsId: 'git', gitToolName: 'Default')]) {
+                sh "git push -u origin main"
+            }
+        }
     }
   }
 }
