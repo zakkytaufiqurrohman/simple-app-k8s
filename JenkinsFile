@@ -9,6 +9,8 @@ pipeline {
     REPO_URL = 'https://github.com/zakkytaufiqurrohman/simple-app-k8s-manifest.git'
     BRANCH_NAME = 'main'
     IMAGE_REPOSITORY = "zakkytaufiq/go-hello-service"
+    IMAGE_TAG = "v1.${env.BUILD_NUMBER}"
+
   }
 
   agent any
