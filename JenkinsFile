@@ -8,6 +8,7 @@ pipeline {
     GIT_CREDENTIALS_ID= 'git'
     REPO_URL = 'https://github.com/zakkytaufiqurrohman/simple-app-k8s-manifest.git'
     BRANCH_NAME = 'main'
+    IMAGE_REPOSITORY = "zakkytaufiq/go-hello-service"
   }
 
   agent any
