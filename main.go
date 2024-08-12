@@ -11,7 +11,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	if appName := os.Getenv("app_name"); appName != "" {
 		name = appName
 	}
-	fmt.Fprintf(w, "my app is, %s!", name)
+	fmt.Fprintf(w, "my app its, %s!", name)
 }
 
 func main() {
